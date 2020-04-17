@@ -19,7 +19,14 @@ It is assumed that
    If not, refer to "Install the Arduino Desktop IDE" on the
    [Arduino site](https://www.arduino.cc/en/Guide/HomePage).
  - The library directory is at its default location.
-   For me, Christoph, that is `C:\Users\christoph\Documents\Arduino\libraries`.
+   For me, that is `C:\Users\sciosense\Documents\Arduino\libraries`.
+
+## Installation
+- Visit the project page for the Arduino CCS811 library.
+- Click the green button Clone or download on the right side.
+- From the pop-up choose Download ZIP.
+- In Arduino IDE, select Sketch > Include Library > Manage Libraries ... and browse to the just downloaded ZIP file.
+- When the IDE is ready this README.md should be located at e.g. `C:\Users\sciosense\Documents\Arduino\libraries\sciosense_ens160\README.md`.
 
 ## Build an example
 To build an example sketch
@@ -27,3 +34,5 @@ To build an example sketch
  - Open File > Example > Examples from Custom Libraries > ENS160 > ENS160basic
  - Make sure Tools > Board lists the correct board.
  - Select Sketch > Verify/Compile.
+
+# ScioSense is a Joint Venture of ams AG
