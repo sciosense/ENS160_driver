@@ -11,8 +11,8 @@ int ArduinoLED = 13;
 //-------------------------------------------------------------
 //ENS160 related items
 //-------------------------------------------------------------
-#include "sciosense_ens160.h"  // ENS160 library
-sciosense_ENS160      ens160(ENS160_I2CADDR_0);
+#include "ScioSense_ens160.h"  // ENS160 library
+ScioSense_ENS160      ens160(ENS160_I2CADDR_0);
 //sciosense_ENS160      ens160(ENS160_I2CADDR_1);
 
 /*--------------------------------------------------------------------------
@@ -72,7 +72,6 @@ void loop() {
     ens160.measure();
   
     if (ArduinoIDE) {
-      Serial.print("iAQ (0x21): ");Serial.print(ens160.getIAQ());Serial.print("\t");
       Serial.print("TVOC (0x22): ");Serial.print(ens160.getTVOC());Serial.print("ppb\t");
       Serial.print("eCO2 (0x24): ");Serial.print(ens160.geteCO2());Serial.print("ppm\t");
       Serial.print("R HP0: ");Serial.print(ens160.getHP0());Serial.print("Ohm\t");

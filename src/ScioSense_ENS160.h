@@ -37,8 +37,7 @@
 #define ENS160_REG_DATA_STATUS		0x20
 #define ENS160_REG_DATA_IAQ			0x21
 #define ENS160_REG_DATA_TVOC		0x22
-#define ENS160_REG_DATA_ETH			0x24
-#define ENS160_REG_DATA_NO2			0x26
+#define ENS160_REG_DATA_ECO2		0x24
 #define ENS160_REG_DATA_BL			0x28
 #define ENS160_REG_DATA_T			0x30
 #define ENS160_REG_DATA_RH			0x32
@@ -125,7 +124,6 @@ class ScioSense_ENS160 {
 		uint8_t				getIAQ() {return this->_data_iaq; }
 		uint16_t			getTVOC() {return this->_data_tvoc; }
 		uint16_t			geteCO2() {return this->_data_eco2; }
-		uint16_t			getNO2() {return this->_data_no2; }
 		uint32_t			getHP0() {return this->_hp0_rs; }
 		uint32_t			getHP1() {return this->_hp1_rs; }
 		uint32_t			getHP2() {return this->_hp2_rs; }
@@ -163,7 +161,6 @@ class ScioSense_ENS160 {
 		uint8_t				_data_iaq;
 		uint16_t			_data_tvoc;
 		uint16_t			_data_eco2;
-		uint16_t			_data_no2;
 		uint32_t			_hp0_rs;
 		uint32_t			_hp0_bl;
 		uint32_t			_hp1_rs;

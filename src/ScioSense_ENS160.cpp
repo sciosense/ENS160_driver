@@ -124,9 +124,7 @@ bool ScioSense_ENS160::clearCommand(void) {
 	uint8_t result;
 	
 	result = this->write8(_slaveaddr, ENS160_REG_COMMAND, ENS160_COMMAND_NOP);
-	//result = blCMDWriteVerify(ENS160_COMMAND_NOP);
 	result = this->write8(_slaveaddr, ENS160_REG_COMMAND, ENS160_COMMAND_CLRGPR);
- 	//result = blCMDWriteVerify(ENS160_COMMAND_CLRGPR);
 	if (debugENS160) {
 		Serial.print("clearCommand() result: ");
 		Serial.println(result == 0 ? "ok" : "nok");
@@ -170,7 +168,6 @@ bool ScioSense_ENS160::getFirmware() {
 	return result == 0;
 }
 
-//bool ScioSense_ENS160::activateOperationMode(uint8_t mode) {
 bool ScioSense_ENS160::setMode(uint8_t mode) {
 	uint8_t result;
 	
@@ -278,13 +275,9 @@ bool ScioSense_ENS160::measure()
 	// Read predictions
 	if (IS_NEWDAT(status)) {
 		result = this->read(_slaveaddr, ENS160_REG_DATA_IAQ, i2cbuf, 7);
-		_data_iaq = i2cbuf[0];
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
-		_data_no2 = i2cbuf[5] | ((uint16_t)i2cbuf[6] << 8);
 
-//		result = this->read(_slaveaddr, ENS160_REG_DATA_MISR, i2cbuf, 1);
-//		_misr = i2cbuf[0];
 	}
 	
 	// Read raw resistance values
