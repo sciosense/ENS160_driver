@@ -31,8 +31,8 @@ It is assumed that
 ## Build an example
 To build an example sketch
  - (Re)start Arduino.
- - Open File > Example > Examples from Custom Libraries > ENS160 > ENS160basic
+ - Open File > Example > Examples from Custom Libraries > ENS160 > ENS160basic_normal
  - Make sure Tools > Board lists the correct board.
  - Select Sketch > Verify/Compile.
 
-# ScioSense is a Joint Venture of ams AG
+### ScioSense is a Joint Venture of ams AG
