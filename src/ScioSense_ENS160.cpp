@@ -6,7 +6,7 @@
   based on application note "ENS160 Software Integration.pdf" rev 0.01
 */
 
-#include "sciosense_ens160.h"
+#include "ScioSense_ENS160.h"
 #include "math.h"
 
 ScioSense_ENS160::ScioSense_ENS160(uint8_t slaveaddr) {
