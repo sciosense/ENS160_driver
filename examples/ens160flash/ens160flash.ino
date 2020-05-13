@@ -10,7 +10,7 @@ int ArduinoLED = 13;
 //-------------------------------------------------------------
 //ENS160 related items
 //-------------------------------------------------------------
-#include "ScioSense_ens160.h"  // ENS160 library
+#include "ScioSense_ENS160.h"  // ENS160 library
 ScioSense_ENS160      ens160(ENS160_I2CADDR_0);
 //sciosense_ENS160      ens160(ENS160_I2CADDR_1);
 
