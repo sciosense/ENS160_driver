@@ -283,20 +283,20 @@ bool ScioSense_ENS160::measure()
 	// Read raw resistance values
 	if (IS_NEWGPR(status)) {
 		result = this->read(_slaveaddr, ENS160_REG_GPR_READ_0, i2cbuf, 8);
-		_hp0_rs = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
-		_hp1_rs = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
-		_hp2_rs = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
-		_hp3_rs = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
+		_hp0_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
+		_hp1_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
+		_hp2_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
+		_hp3_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
 		
 	}
 
 	// Read baselines
 	if ((IS_NEWGPR(status)) or (IS_NEWDAT(status))) {
 		result = this->read(_slaveaddr, ENS160_REG_DATA_BL, i2cbuf, 8);
-		_hp0_bl = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
-		_hp1_bl = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
-		_hp2_bl = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
-		_hp3_bl = CONVERT_RS_RAW2OHMS_I((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
+		_hp0_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
+		_hp1_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
+		_hp2_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
+		_hp3_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
 
 		result = this->read(_slaveaddr, ENS160_REG_DATA_MISR, i2cbuf, 1);
 		_misr = i2cbuf[0];
