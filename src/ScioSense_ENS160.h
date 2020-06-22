@@ -17,30 +17,28 @@
 
 #include <Wire.h>
 
-//#define debugENS160 false   //true for debugging
-
 // Chip constants
-#define ENS160_PARTID				0x6001
-#define ENS160_BOOTING				50
+#define ENS160_PARTID			0x6001
+#define ENS160_BOOTING			50
 
 // 7-bit I2C slave address of the ENS160
 #define ENS160_I2CADDR_0          	0x52		//ADDR low
 #define ENS160_I2CADDR_1          	0x53		//ADDR high
 
 // ENS160 registers for version V0
-#define ENS160_REG_PART_ID          0x00 // 2 byte register
-#define ENS160_REG_OPMODE			0x10
-#define ENS160_REG_CONFIG			0x11
-#define ENS160_REG_COMMAND			0x12
-#define ENS160_REG_TEMP_IN			0x13
-#define ENS160_REG_RH_IN			0x15
+#define ENS160_REG_PART_ID          	0x00 		// 2 byte register
+#define ENS160_REG_OPMODE		0x10
+#define ENS160_REG_CONFIG		0x11
+#define ENS160_REG_COMMAND		0x12
+#define ENS160_REG_TEMP_IN		0x13
+#define ENS160_REG_RH_IN		0x15
 #define ENS160_REG_DATA_STATUS		0x20
-#define ENS160_REG_DATA_IAQ			0x21
+#define ENS160_REG_DATA_IAQ		0x21
 #define ENS160_REG_DATA_TVOC		0x22
 #define ENS160_REG_DATA_ECO2		0x24
-#define ENS160_REG_DATA_BL			0x28
-#define ENS160_REG_DATA_T			0x30
-#define ENS160_REG_DATA_RH			0x32
+#define ENS160_REG_DATA_BL		0x28
+#define ENS160_REG_DATA_T		0x30
+#define ENS160_REG_DATA_RH		0x32
 #define ENS160_REG_DATA_MISR		0x38
 #define ENS160_REG_GPR_WRITE_0		0x40
 #define ENS160_REG_GPR_WRITE_1		ENS160_REG_GPR_WRITE_0 + 1
@@ -56,26 +54,26 @@
 #define ENS160_REG_GPR_READ_7		ENS160_REG_GPR_READ_0 + 7
 
 //ENS160 data register fields
-#define ENS160_COMMAND_NOP			0x00
+#define ENS160_COMMAND_NOP		0x00
 #define ENS160_COMMAND_CLRGPR		0xCC
 #define ENS160_COMMAND_GETVER		0x0E 
 #define ENS160_COMMAND_SETTH		0x02
 #define ENS160_COMMAND_SETSEQ		0xC2
 
-#define ENS160_OPMODE_RESET			0xF0
+#define ENS160_OPMODE_RESET		0xF0
 #define ENS160_OPMODE_DEP_SLEEP		0x00
-#define ENS160_OPMODE_IDLE			0x01
+#define ENS160_OPMODE_IDLE		0x01
 #define ENS160_OPMODE_NORMAL		0x02
 #define ENS160_OPMODE_INTERMEDIATE	0x03	
 #define ENS160_OPMODE_CUSTOM		0xC0
-#define ENS160_OPMODE_D0			0xD0
-#define ENS160_OPMODE_D1			0xD1
+#define ENS160_OPMODE_D0		0xD0
+#define ENS160_OPMODE_D1		0xD1
 #define ENS160_OPMODE_BOOTLOADER	0xB0
 
-#define ENS160_BL_CMD_START			0x02
+#define ENS160_BL_CMD_START		0x02
 #define ENS160_BL_CMD_ERASE_APP		0x04
 #define ENS160_BL_CMD_ERASE_BLINE	0x06
-#define ENS160_BL_CMD_WRITE			0x08
+#define ENS160_BL_CMD_WRITE		0x08
 #define ENS160_BL_CMD_VERIFY		0x0A
 #define ENS160_BL_CMD_GET_BLVER		0x0C
 #define ENS160_BL_CMD_GET_APPVER	0x0E
@@ -90,12 +88,12 @@
 #define ENS160_DATA_STATUS_NEWDAT	0x02
 #define ENS160_DATA_STATUS_NEWGPR	0x01
 
-#define IS_NEWDAT(x) 						(ENS160_DATA_STATUS_NEWDAT == (ENS160_DATA_STATUS_NEWDAT & (x)))
-#define IS_NEWGPR(x) 						(ENS160_DATA_STATUS_NEWGPR == (ENS160_DATA_STATUS_NEWGPR & (x)))
-#define IS_NEW_DATA_AVAILABLE(x) 			(0 != ((ENS160_DATA_STATUS_NEWDAT | ENS160_DATA_STATUS_NEWGPR ) & (x)))
+#define IS_NEWDAT(x) 			(ENS160_DATA_STATUS_NEWDAT == (ENS160_DATA_STATUS_NEWDAT & (x)))
+#define IS_NEWGPR(x) 			(ENS160_DATA_STATUS_NEWGPR == (ENS160_DATA_STATUS_NEWGPR & (x)))
+#define IS_NEW_DATA_AVAILABLE(x) 	(0 != ((ENS160_DATA_STATUS_NEWDAT | ENS160_DATA_STATUS_NEWGPR ) & (x)))
 
-#define CONVERT_RS_RAW2OHMS_I(x) 				(1 << ((x) >> 11))
-#define CONVERT_RS_RAW2OHMS_F(x) 				(pow (2, (float)(x) / 2048))
+#define CONVERT_RS_RAW2OHMS_I(x) 	(1 << ((x) >> 11))
+#define CONVERT_RS_RAW2OHMS_F(x) 	(pow (2, (float)(x) / 2048))
 
 static uint8_t ENS160_BL_MAGIC[5] = {0x53, 0xCE, 0x1A, 0xBF};
 
@@ -115,7 +113,7 @@ class ScioSense_ENS160 {
 		bool 				addCustomStep(uint16_t time, bool measureHP0, bool measureHP1, bool measureHP2, bool measureHP3, uint16_t tempHP0, uint16_t tempHP1, uint16_t tempHP2, uint16_t tempHP3);
 
 
-		bool 				measure(); 												// perfrom measurement and stores result in internal variables
+		bool 				measure(bool waitForNew = True); 												// perfrom measurement and stores result in internal variables
 		bool 				set_envdata210(uint16_t t, uint16_t h);					// Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
 		uint8_t				getMajorRev() {return this->_fw_ver_major; }
 		uint8_t				getMinorRev() {return this->_fw_ver_minor; }
@@ -147,7 +145,7 @@ class ScioSense_ENS160 {
 		bool 				clearCommand(void);
 		bool				getFirmware();
 		
-		int					blCMDWriteVerify(uint8_t command);
+		int				blCMDWriteVerify(uint8_t command);
 		
 		
 		bool				_available = false;							// ENS160 available
@@ -170,7 +168,7 @@ class ScioSense_ENS160 {
 		uint32_t			_hp3_rs;
 		uint32_t			_hp3_bl;
 		uint16_t			_temp;
-	    int  				_slaveaddr;										// Slave address of the ENS160
+		int  				_slaveaddr;										// Slave address of the ENS160
 		uint8_t				_misr;
 
 		
@@ -180,9 +178,9 @@ class ScioSense_ENS160 {
 		};
 
 
-	/****************************************************************************/
-	/*	General functions														*/
-    /****************************************************************************/
+/****************************************************************************/
+/* General functions														*/
+/****************************************************************************/
 		void 				_i2c_init();
 				
 		uint8_t				read8(uint8_t addr, byte reg);	
