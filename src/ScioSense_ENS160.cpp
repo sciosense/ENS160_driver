@@ -252,7 +252,7 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 }
 
 // Performs one single shot temperature and relative humidity measurement.
-bool ScioSense_ENS160::measure() 
+bool ScioSense_ENS160::measure(bool waitForNew = True) 
 {
 	bool ok;
 	uint8_t i2cbuf[8];
@@ -261,16 +261,22 @@ bool ScioSense_ENS160::measure()
 
 	// Set default status for early bail out
 	if (debugENS160) Serial.println("Start measurement");
-	do {
-		delay(ENS160_BOOTING);
+	
+	// Either wait that new data is available (might take up to 1sec) or proceed even with old data
+	if (waitForNew) {
+		do {
+			delay(ENS160_BOOTING);
+			status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
+
+			if (debugENS160) {
+				Serial.print("Status: ");
+				Serial.println(status);
+			}
+
+		} while (!IS_NEW_DATA_AVAILABLE(status));
+	} else {
 		status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
-		
-		if (debugENS160) {
-			Serial.print("Status: ");
-			Serial.println(status);
-		}
-		
-	} while (!IS_NEW_DATA_AVAILABLE(status));
+	}
 	
 	// Read predictions
 	if (IS_NEWDAT(status)) {
