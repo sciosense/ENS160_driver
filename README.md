@@ -54,7 +54,7 @@ Provides true/false feedback whether the sensor is available or not. The informa
 
 This function is used to set the sensor operation mode. Currently two modes are implemented and can be set by the following commands:
 
-*ENS160_OPMODE_NORMAL*: operates the sensor with a predefined heater scheme and provides prediction for eCO2 and TVOC
+*ENS160_OPMODE_STD*: operates the sensor with a predefined heater scheme and provides prediction for eCO2 and TVOC
 
 *ENS160_OPMODE_CUSTOM*: operates the sensor with a custom defined heaterand measurement scheme, only raw resistance values will be 
 
