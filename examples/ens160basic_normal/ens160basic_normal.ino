@@ -48,8 +48,8 @@ void setup() {
     Serial.print("."); Serial.print(ens160.getMinorRev());
     Serial.print("."); Serial.println(ens160.getBuild());
   
-    Serial.print("setup: ENS160 normal mode ");
-    if (!ens160.setMode(ENS160_OPMODE_NORMAL) ) {
+    Serial.print("setup: ENS160 standard mode ");
+    if (!ens160.setMode(ENS160_OPMODE_STD) ) {
       Serial.println("FAILED");
     } else {
       Serial.println("successful");
