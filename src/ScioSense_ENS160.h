@@ -95,7 +95,7 @@
 #define CONVERT_RS_RAW2OHMS_I(x) 	(1 << ((x) >> 11))
 #define CONVERT_RS_RAW2OHMS_F(x) 	(pow (2, (float)(x) / 2048))
 
-static uint8_t ENS160_BL_MAGIC[5] = {0x53, 0xCE, 0x1A, 0xBF};
+static uint8_t ENS160_BL_MAGIC[4] = {0x53, 0xCE, 0x1A, 0xBF};
 
 class ScioSense_ENS160 {
 		
