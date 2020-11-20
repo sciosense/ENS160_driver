@@ -252,7 +252,7 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 }
 
 // Performs one single shot temperature and relative humidity measurement.
-bool ScioSense_ENS160::measure(bool waitForNew = True) 
+bool ScioSense_ENS160::measure(bool waitForNew) 
 {
 	bool ok;
 	uint8_t i2cbuf[8];
