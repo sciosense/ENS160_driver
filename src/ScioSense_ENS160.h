@@ -33,9 +33,9 @@
 #define ENS160_REG_TEMP_IN		0x13
 #define ENS160_REG_RH_IN		0x15
 #define ENS160_REG_DATA_STATUS		0x20
-#define ENS160_REG_DATA_IAQ		0x21
+#define ENS160_REG_DATA_AQI		0x21
 #define ENS160_REG_DATA_TVOC		0x22
-#define ENS160_REG_DATA_ECO2		0x24
+#define ENS160_REG_DATA_ECO2		0x24			
 #define ENS160_REG_DATA_BL		0x28
 #define ENS160_REG_DATA_T		0x30
 #define ENS160_REG_DATA_RH		0x32
@@ -119,7 +119,7 @@ class ScioSense_ENS160 {
 		uint8_t				getMinorRev() {return this->_fw_ver_minor; }
 		uint8_t				getBuild() {return this->_fw_ver_build; }
 
-		uint8_t				getIAQ() {return this->_data_iaq; }
+		uint8_t				getAQI() {return this->_data_aqi; }
 		uint16_t			getTVOC() {return this->_data_tvoc; }
 		uint16_t			geteCO2() {return this->_data_eco2; }
 		uint32_t			getHP0() {return this->_hp0_rs; }
@@ -156,7 +156,7 @@ class ScioSense_ENS160 {
 
 		uint16_t			_stepCount;									// Counter for custom sequence
 
-		uint8_t				_data_iaq;
+		uint8_t				_data_aqi;
 		uint16_t			_data_tvoc;
 		uint16_t			_data_eco2;
 		uint32_t			_hp0_rs;
