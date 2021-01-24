@@ -22,11 +22,11 @@ It is assumed that
    For me, that is `C:\Users\sciosense\Documents\Arduino\libraries`.
 
 ## Installation
-- Visit the project page for the Arduino CCS811 library.
+- Visit the project page for the Arduino ENS160 library.
 - Click the green button Clone or download on the right side.
 - From the pop-up choose Download ZIP.
 - In Arduino IDE, select Sketch > Include Library > Manage Libraries ... and browse to the just downloaded ZIP file.
-- When the IDE is ready this README.md should be located at e.g. `C:\Users\sciosense\Documents\Arduino\libraries\sciosense_ens160\README.md`.
+- When the IDE is ready this README.md should be located at e.g. `C:\Users\sciosense\Documents\Arduino\libraries\ScioSense_ENS160\README.md`.
 
 ## Build an example
 To build an example sketch
