@@ -15,8 +15,12 @@
 ENS160				KEYWORD1
 ens160				KEYWORD1
 sciosense_ens160	KEYWORD1
-SCIOSENSE_ENS160	KEYWORD1
+Sciosense_ens160	KEYWORD1
 ScioSense_ens160	KEYWORD1
+sciosense_ENS160	KEYWORD1
+Sciosense_ENS160	KEYWORD1
+ScioSense_ENS160	KEYWORD1
+SCIOSENSE_ENS160	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
