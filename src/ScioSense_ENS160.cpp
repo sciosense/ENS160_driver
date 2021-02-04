@@ -1,5 +1,6 @@
 /*
   ScioSense_ENS160.h - Library for the ENS160 sensor with I2C interface from ScioSense
+  2021 Feb 04	v4	Giuseppe de Pinto	Custom mode fixed
   2020 Apr 06	v3	Christoph Friese	Changed nomenclature to ScioSense as product shifted from ams
   2020 Feb 15	v2	Giuseppe Pasetti	Corrected firmware flash option
   2019 May 05	v1	Christoph Friese	Created
@@ -149,7 +150,7 @@ bool ScioSense_ENS160::getFirmware() {
 	
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
 	
-	result = this->write8(_slaveaddr, ENS160_REG_COMMAND, ENS160_COMMAND_GET_APPVER);
+	result = this->write8(_slaveaddr, ENS160_REG_COMMAND, ENS160_COMMAND_GETVER);
 	result = this->read(_slaveaddr, ENS160_REG_GPR_READ_4, i2cbuf, 3);	
 
 	this->_fw_ver_major = i2cbuf[0];
@@ -232,12 +233,12 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 
 	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_6, (uint8_t)(this->_stepCount - 1));
 
-	if (this->_stepCount == 0) {
-		result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);
-	} else {
-		result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);
-	}
-	delay(ENS160_BOOTING);
+    if (this->_stepCount == 1) {
+        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);
+    } else {
+        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);
+    }
+    delay(ENS160_BOOTING);
 
 	seq_ack = this->read8(_slaveaddr, ENS160_REG_GPR_READ_7);
 	delay(ENS160_BOOTING);                   // Wait to boot after reset		
@@ -252,7 +253,7 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 }
 
 // Performs one single shot temperature and relative humidity measurement.
-bool ScioSense_ENS160::measure(bool waitForNew) 
+bool ScioSense_ENS160::measure() 
 {
 	bool ok;
 	uint8_t i2cbuf[8];
@@ -261,22 +262,20 @@ bool ScioSense_ENS160::measure(bool waitForNew)
 
 	// Set default status for early bail out
 	if (debugENS160) Serial.println("Start measurement");
+	status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
 	
-	// Either wait that new data is available (might take up to 1sec) or proceed even with old data
-	if (waitForNew) {
-		do {
-			delay(ENS160_BOOTING);
-			status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
-
-			if (debugENS160) {
-				Serial.print("Status: ");
-				Serial.println(status);
-			}
-
-		} while (!IS_NEW_DATA_AVAILABLE(status));
-	} else {
+	/*
+	do {
+		delay(ENS160_BOOTING);
 		status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
-	}
+		
+		if (debugENS160) {
+			Serial.print("Status: ");
+			Serial.println(status);
+		}
+		
+	} while (!IS_NEW_DATA_AVAILABLE(status));
+	*/
 	
 	// Read predictions
 	if (IS_NEWDAT(status)) {
@@ -544,4 +543,26 @@ uint8_t ScioSense_ENS160::write(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t
 /**************************************************************************/
 
 
+
+
+
+/*
+[Yesterday 14:04] Giuseppe Pasetti
+    you should modify rows 235-240 in cpp file 
+​
+        if (this->_stepCount == 1) {​​​​​​​
+        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);
+    }​​​​​​​ else {​​​​​​​
+        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);
+    }​​​​​​​
+    delay(ENS160_BOOTING);
+​
+"if (this->_stepCount == 0) {​​​​​​​ " should be modified in "if (this->_stepCount == 1) {​​​​​​​​" ​
+
+"result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);" should be modified in "result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);"
+
+"result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);" should be modified in "result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);"
+
+    3 rows to be changed
+*/
 
