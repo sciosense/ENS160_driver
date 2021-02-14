@@ -13,9 +13,9 @@
 ScioSense_ENS160::ScioSense_ENS160(uint8_t slaveaddr) {
 	this->_slaveaddr = slaveaddr;
 	
-	this->_ADDR = -1; 
-	this->_nINT = -1; 
-	this->_nCS = -1;
+	this->_ADDR = 0; 
+	this->_nINT = 0; 
+	this->_nCS = 0;
 }
 
 ScioSense_ENS160::ScioSense_ENS160(uint8_t ADDR, uint8_t nCS, uint8_t nINT) {
@@ -37,19 +37,15 @@ ScioSense_ENS160::ScioSense_ENS160(uint8_t slaveaddr, uint8_t ADDR, uint8_t nCS,
 // Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
 bool ScioSense_ENS160::begin(bool debug, bool bootloader) 
 {
-	bool result;
-	//uint16_t partid;
-	uint8_t i2cbuf[2];
-  
 	debugENS160 = debug;
 
 	//Set pin levels
-	if (this->_ADDR > -1) {
+	if (this->_ADDR > 0) {
 		pinMode(this->_ADDR, OUTPUT);
 		digitalWrite(this->_ADDR, LOW);
 	}
-	if (this->_nINT > -1) pinMode(this->_nINT, INPUT_PULLUP);
-	if (this->_nCS > -1) {
+	if (this->_nINT > 0) pinMode(this->_nINT, INPUT_PULLUP);
+	if (this->_nCS > 0) {
 		pinMode(this->_nCS, OUTPUT);
 		digitalWrite(this->_nCS, HIGH);
 	}
@@ -62,20 +58,20 @@ bool ScioSense_ENS160::begin(bool debug, bool bootloader)
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
   
 	this->_available = false;
-	result = this->reset(); 
+	this->_available = this->reset(); 
 	
 	this->_available = this->checkPartID();
 
 	if (this->_available) {
 		//sciosenseEither select bootloader or idle mode
 		if (bootloader) {
-			result = this->setMode(ENS160_OPMODE_BOOTLOADER); 
+			this->_available = this->setMode(ENS160_OPMODE_BOOTLOADER); 
 		} else {
-			result = this->setMode(ENS160_OPMODE_IDLE);	
+			this->_available = this->setMode(ENS160_OPMODE_IDLE);	
 		}
 		
-		result = this->clearCommand();
-		result = this->getFirmware();
+		this->_available = this->clearCommand();
+		this->_available = this->getFirmware();
 	}
 	if (debugENS160) {
 		if (bootloader) {
@@ -107,7 +103,7 @@ bool ScioSense_ENS160::checkPartID(void) {
 	uint8_t i2cbuf[2];
 	uint16_t part_id;
 	
-	uint8_t result = this->read(_slaveaddr, ENS160_REG_PART_ID, i2cbuf, 2);
+	this->read(_slaveaddr, ENS160_REG_PART_ID, i2cbuf, 2);
 	part_id = i2cbuf[1] | ((uint16_t)i2cbuf[0] << 8);
 	
 	if (debugENS160) {
@@ -206,7 +202,6 @@ bool ScioSense_ENS160::initCustomMode(uint16_t stepNum) {
 
 // Add custom mode step with definition of temperatures, duration and measurement 
 bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measureHP1, bool measureHP2, bool measureHP3, uint16_t tempHP0, uint16_t tempHP1, uint16_t tempHP2, uint16_t tempHP3) {
-	uint8_t result;
 	uint8_t seq_ack;
 	uint8_t temp;
 
@@ -221,22 +216,22 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 	if (measureHP1) temp = temp | 0x10;
 	if (measureHP2) temp = temp | 0x8;
 	if (measureHP3) temp = temp | 0x4;
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_0, temp);
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_0, temp);
 
 	temp = (uint8_t)((time / 24) >> 2); 
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_1, temp);
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_1, temp);
 
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_2, (uint8_t)(tempHP0/2));
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_3, (uint8_t)(tempHP1/2));
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_4, (uint8_t)(tempHP2/2));
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_5, (uint8_t)(tempHP3/2));
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_2, (uint8_t)(tempHP0/2));
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_3, (uint8_t)(tempHP1/2));
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_4, (uint8_t)(tempHP2/2));
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_5, (uint8_t)(tempHP3/2));
 
-	result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_6, (uint8_t)(this->_stepCount - 1));
+	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_6, (uint8_t)(this->_stepCount - 1));
 
     if (this->_stepCount == 1) {
-        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);
+        this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);
     } else {
-        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);
+        this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);
     }
     delay(ENS160_BOOTING);
 
@@ -255,10 +250,8 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 // Performs one single shot temperature and relative humidity measurement.
 bool ScioSense_ENS160::measure() 
 {
-	bool ok;
 	uint8_t i2cbuf[8];
 	uint8_t status;
-	uint8_t result;
 
 	// Set default status for early bail out
 	if (debugENS160) Serial.println("Start measurement");
@@ -279,7 +272,7 @@ bool ScioSense_ENS160::measure()
 	
 	// Read predictions
 	if (IS_NEWDAT(status)) {
-		result = this->read(_slaveaddr, ENS160_REG_DATA_IAQ, i2cbuf, 7);
+		this->read(_slaveaddr, ENS160_REG_DATA_IAQ, i2cbuf, 7);
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
 
@@ -287,7 +280,7 @@ bool ScioSense_ENS160::measure()
 	
 	// Read raw resistance values
 	if (IS_NEWGPR(status)) {
-		result = this->read(_slaveaddr, ENS160_REG_GPR_READ_0, i2cbuf, 8);
+		this->read(_slaveaddr, ENS160_REG_GPR_READ_0, i2cbuf, 8);
 		_hp0_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
 		_hp1_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
 		_hp2_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
@@ -297,17 +290,17 @@ bool ScioSense_ENS160::measure()
 
 	// Read baselines
 	if ((IS_NEWGPR(status)) or (IS_NEWDAT(status))) {
-		result = this->read(_slaveaddr, ENS160_REG_DATA_BL, i2cbuf, 8);
+		this->read(_slaveaddr, ENS160_REG_DATA_BL, i2cbuf, 8);
 		_hp0_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
 		_hp1_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
 		_hp2_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
 		_hp3_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
 
-		result = this->read(_slaveaddr, ENS160_REG_DATA_MISR, i2cbuf, 1);
+		this->read(_slaveaddr, ENS160_REG_DATA_MISR, i2cbuf, 1);
 		_misr = i2cbuf[0];
 	}
 	
-	return ok==0;
+	return true;
 }
 
 // Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
