@@ -146,7 +146,7 @@ bool ScioSense_ENS160::getFirmware() {
 	
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
 	
-	result = this->write8(_slaveaddr, ENS160_REG_COMMAND, ENS160_COMMAND_GETVER);
+	result = this->write8(_slaveaddr, ENS160_REG_COMMAND, ENS160_COMMAND_GET_APPVER);
 	result = this->read(_slaveaddr, ENS160_REG_GPR_READ_4, i2cbuf, 3);	
 
 	this->_fw_ver_major = i2cbuf[0];
@@ -272,7 +272,7 @@ bool ScioSense_ENS160::measure()
 	
 	// Read predictions
 	if (IS_NEWDAT(status)) {
-		this->read(_slaveaddr, ENS160_REG_DATA_IAQ, i2cbuf, 7);
+		this->read(_slaveaddr, ENS160_REG_DATA_AQI, i2cbuf, 7);
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
 
