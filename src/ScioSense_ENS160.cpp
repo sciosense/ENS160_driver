@@ -275,7 +275,7 @@ bool ScioSense_ENS160::measure(bool)
 		this->read(_slaveaddr, ENS160_REG_DATA_AQI, i2cbuf, 7);
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
-
+		_data_aqi = i2cbuf[0];
 	}
 	
 	// Read raw resistance values
