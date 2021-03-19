@@ -112,8 +112,8 @@ class ScioSense_ENS160 {
 		bool 				initCustomMode(uint16_t stepNum);
 		bool 				addCustomStep(uint16_t time, bool measureHP0, bool measureHP1, bool measureHP2, bool measureHP3, uint16_t tempHP0, uint16_t tempHP1, uint16_t tempHP2, uint16_t tempHP3);
 
-
 		bool 				measure(bool waitForNew = true); 												// perfrom measurement and stores result in internal variables
+		bool 				set_envdata(uint16_t t, uint16_t h);					// Writes t (degC) and h (%rh) to ENV_DATA. Returns false on I2C problems.
 		bool 				set_envdata210(uint16_t t, uint16_t h);					// Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
 		uint8_t				getMajorRev() {return this->_fw_ver_major; }
 		uint8_t				getMinorRev() {return this->_fw_ver_minor; }
