@@ -303,18 +303,28 @@ bool ScioSense_ENS160::measure(bool)
 	return true;
 }
 
+// Writes t (degC) and h (%) to ENV_DATA. Returns false on I2C problems.
+bool ScioSense_ENS160::set_envdata(uint16_t t, uint16_t h) {
+	
+	uint16_t t_data = (uint16_t)((t + 273.15f) * 64.0f);
+	
+	uint16_t rh_data = (uint16_t)(h * 512.0f);
+	
+	return this->set_envdata210(t_data, rh_data);
+}
+
 // Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
 bool ScioSense_ENS160::set_envdata210(uint16_t t, uint16_t h) {
-	uint16_t trh;
+	uint16_t temp;
 	uint8_t trh_in[4];
 	
-	trh = (uint16_t)((t + 273.15f) * 64.0f);
-	trh_in[0] = trh & 0xff;
-	trh_in[1] = (trh >> 8) & 0xff;
+	//temp = (uint16_t)((t + 273.15f) * 64.0f);
+	trh_in[0] = t & 0xff;
+	trh_in[1] = (t >> 8) & 0xff;
 	
-	trh = (uint16_t)(h * 512.0f);
-	trh_in[2] = trh & 0xff;
-	trh_in[3] = (trh >> 8) & 0xff;
+	//temp = (uint16_t)(h * 512.0f);
+	trh_in[2] = h & 0xff;
+	trh_in[3] = (h >> 8) & 0xff;
 	
 	uint8_t result = this->write(_slaveaddr, ENS160_REG_TEMP_IN, trh_in, 4);
 	
