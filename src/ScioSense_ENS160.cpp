@@ -304,7 +304,7 @@ bool ScioSense_ENS160::measure(bool)
 }
 
 // Writes t (degC) and h (%) to ENV_DATA. Returns false on I2C problems.
-bool ScioSense_ENS160::set_envdata(uint16_t t, uint16_t h) {
+bool ScioSense_ENS160::set_envdata(float t, float h) {
 	
 	uint16_t t_data = (uint16_t)((t + 273.15f) * 64.0f);
 	
@@ -544,28 +544,4 @@ uint8_t ScioSense_ENS160::write(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t
 }
 
 /**************************************************************************/
-
-
-
-
-
-/*
-[Yesterday 14:04] Giuseppe Pasetti
-    you should modify rows 235-240 in cpp file 
-​
-        if (this->_stepCount == 1) {​​​​​​​
-        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);
-    }​​​​​​​ else {​​​​​​​
-        result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);
-    }​​​​​​​
-    delay(ENS160_BOOTING);
-​
-"if (this->_stepCount == 0) {​​​​​​​ " should be modified in "if (this->_stepCount == 1) {​​​​​​​​" ​
-
-"result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);" should be modified in "result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);"
-
-"result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 128);" should be modified in "result = this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_7, 0);"
-
-    3 rows to be changed
-*/
 
