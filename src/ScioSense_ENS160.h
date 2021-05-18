@@ -19,7 +19,7 @@
 
 // Chip constants
 #define ENS160_PARTID			0x6001
-#define ENS160_BOOTING			50
+#define ENS160_BOOTING			10
 
 // 7-bit I2C slave address of the ENS160
 #define ENS160_I2CADDR_0          	0x52		//ADDR low
@@ -95,7 +95,7 @@
 #define CONVERT_RS_RAW2OHMS_I(x) 	(1 << ((x) >> 11))
 #define CONVERT_RS_RAW2OHMS_F(x) 	(pow (2, (float)(x) / 2048))
 
-static uint8_t ENS160_BL_MAGIC[4] = {0x53, 0xCE, 0x1A, 0xBF};
+//static uint8_t ENS160_BL_MAGIC[4] = {0x53, 0xCE, 0x1A, 0xBF};
 
 class ScioSense_ENS160 {
 		
@@ -113,7 +113,7 @@ class ScioSense_ENS160 {
 		bool 				addCustomStep(uint16_t time, bool measureHP0, bool measureHP1, bool measureHP2, bool measureHP3, uint16_t tempHP0, uint16_t tempHP1, uint16_t tempHP2, uint16_t tempHP3);
 
 		bool 				measure(bool waitForNew = true); 												// perfrom measurement and stores result in internal variables
-		bool 				set_envdata(float t, float h);					// Writes t (degC) and h (%rh) to ENV_DATA. Returns false on I2C problems.
+		bool 				set_envdata(float t, float h);							// Writes t (degC) and h (%rh) to ENV_DATA. Returns false on I2C problems.
 		bool 				set_envdata210(uint16_t t, uint16_t h);					// Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
 		uint8_t				getMajorRev() {return this->_fw_ver_major; }
 		uint8_t				getMinorRev() {return this->_fw_ver_minor; }
@@ -149,7 +149,7 @@ class ScioSense_ENS160 {
 		
 		
 		bool				_available = false;							// ENS160 available
-
+		
 		uint8_t				_fw_ver_major;
 		uint8_t 			_fw_ver_minor;
 		uint8_t				_fw_ver_build;

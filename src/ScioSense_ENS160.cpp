@@ -63,7 +63,7 @@ bool ScioSense_ENS160::begin(bool debug, bool bootloader)
 	this->_available = this->checkPartID();
 
 	if (this->_available) {
-		//sciosenseEither select bootloader or idle mode
+		//Either select bootloader or idle mode
 		if (bootloader) {
 			this->_available = this->setMode(ENS160_OPMODE_BOOTLOADER); 
 		} else {
@@ -247,31 +247,33 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 	
 }
 
-// Performs one single shot temperature and relative humidity measurement.
-bool ScioSense_ENS160::measure(bool) 
-{
+// Performs one single shot  measurement.
+bool ScioSense_ENS160::measure(bool waitForNew) {
 	uint8_t i2cbuf[8];
 	uint8_t status;
+	bool newData = false;
 
 	// Set default status for early bail out
 	if (debugENS160) Serial.println("Start measurement");
-	status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
 	
-	/*
-	do {
-		delay(ENS160_BOOTING);
-		status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
-		
-		if (debugENS160) {
-			Serial.print("Status: ");
-			Serial.println(status);
-		}
-		
-	} while (!IS_NEW_DATA_AVAILABLE(status));
-	*/
+	if (waitForNew) {
+		do {
+			delay(1);
+			status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
+			
+			if (debugENS160) {
+				Serial.print("Status: ");
+				Serial.println(status);
+			}
+			
+		} while (!IS_NEW_DATA_AVAILABLE(status));
+	} else {
+		status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);	
+	}
 	
 	// Read predictions
 	if (IS_NEWDAT(status)) {
+		newData = true;
 		this->read(_slaveaddr, ENS160_REG_DATA_AQI, i2cbuf, 7);
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
@@ -285,7 +287,6 @@ bool ScioSense_ENS160::measure(bool)
 		_hp1_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
 		_hp2_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
 		_hp3_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
-		
 	}
 
 	// Read baselines
@@ -300,7 +301,7 @@ bool ScioSense_ENS160::measure(bool)
 		_misr = i2cbuf[0];
 	}
 	
-	return true;
+	return newData;
 }
 
 // Writes t (degC) and h (%) to ENV_DATA. Returns false on I2C problems.
@@ -315,7 +316,7 @@ bool ScioSense_ENS160::set_envdata(float t, float h) {
 
 // Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
 bool ScioSense_ENS160::set_envdata210(uint16_t t, uint16_t h) {
-	uint16_t temp;
+	//uint16_t temp;
 	uint8_t trh_in[4];
 	
 	//temp = (uint16_t)((t + 273.15f) * 64.0f);
