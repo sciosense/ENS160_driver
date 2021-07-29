@@ -1,7 +1,10 @@
 /***************************************************************************
-  This is a example for ENS160 basic reading 
+  ENS160 - Digital Air Quality Sensor
+  
+  This is an example for ENS160 basic reading in standard mode
+  In addition temperatuer & humidity sensor data from ENS210 is used for compensation 
     
-  Written by Christoph Friese for Sciosense / 8-April-2020
+  Updated by Sciosense / 29-July-2021
  ***************************************************************************/
 
 #include <Wire.h>
@@ -12,7 +15,7 @@ int ArduinoLED = 13;
 //-------------------------------------------------------------
 #include "ScioSense_ENS160.h"  // ENS160 library
 ScioSense_ENS160      ens160(ENS160_I2CADDR_0);
-//sciosense_ENS160      ens160(ENS160_I2CADDR_1);
+//ScioSense_ENS160      ens160(ENS160_I2CADDR_1);
 
 //-------------------------------------------------------------
 //ENS210 related items
@@ -22,16 +25,15 @@ ScioSense_ENS210      ens210;
 
 /*--------------------------------------------------------------------------
   SETUP function
-  initiate sensor
+  initiate sensors
  --------------------------------------------------------------------------*/
 void setup() {
-  bool ok;
 
   //-------------------------------------------------------------
   // General setup steps
   //-------------------------------------------------------------
 
-  Serial.begin(9600);
+  Serial.begin(11520);
 
   while (!Serial) {}
 
@@ -39,34 +41,36 @@ void setup() {
   pinMode(ArduinoLED, OUTPUT);
   digitalWrite(ArduinoLED, LOW);
 
-  Serial.println("ENS160 example with RH & T compensation");
+  Serial.println("------------------------------------------------------------");
+  Serial.println("ENS160 - Digital air quality sensor");
+  Serial.println();
+  Serial.println("Sensor readout with rH & T compensation");
+  Serial.println();
+  Serial.println("------------------------------------------------------------");
+
   delay(1000);
 
   //-------------------------------------------------------------
-  //ENS160 related items
+  // ENS160 related items
   //-------------------------------------------------------------
   Serial.print("ENS160...");
-  ok = ens160.begin();
+  ens160.begin();
   Serial.println(ens160.available() ? "done." : "failed!");
   if (ens160.available()) {
     // Print ENS160 versions
-    Serial.print("Rev: "); Serial.print(ens160.getMajorRev());
+    Serial.print("\tRev: "); Serial.print(ens160.getMajorRev());
     Serial.print("."); Serial.print(ens160.getMinorRev());
     Serial.print("."); Serial.println(ens160.getBuild());
 
-    Serial.print("setup: ENS160 standard mode ");
-    if (!ens160.setMode(ENS160_OPMODE_STD) ) {
-      Serial.println("FAILED");
-    } else {
-      Serial.println("successful");
-    }
+    Serial.print("\tStandard mode ");
+    Serial.println(ens160.setMode(ENS160_OPMODE_STD) ? "done." : "failed!" );
   }
   
   //-------------------------------------------------------------
-  //ENS210 related items
+  // ENS210 related items
   //-------------------------------------------------------------
   Serial.print("ENS210...");
-  ok = ens210.begin();
+  ens210.begin();
   Serial.println(ens210.available() ? "done." : "failed!");
   ens210.setSingleMode(false);
 
@@ -74,17 +78,15 @@ void setup() {
   digitalWrite(ArduinoLED, HIGH);
   delay(100);
   digitalWrite(ArduinoLED, LOW);
-  
 }
 
 /*--------------------------------------------------------------------------
   MAIN LOOP FUNCTION
-  Cylce every 1000ms and perform action
+  Cylce every 1000ms and perform measurement
  --------------------------------------------------------------------------*/
 
 void loop() {
-
-  
+ 
   if (ens160.available()) {
     if (ens210.available()) {
       ens210.measure();
@@ -93,8 +95,9 @@ void loop() {
     ens160.measure();
   }
   
-  Serial.print("TVOC (0x22): ");Serial.print(ens160.getTVOC());Serial.print("ppb\t");
-  Serial.print("eCO2 (0x24): ");Serial.print(ens160.getEtOH());Serial.print("ppm\t");
+  Serial.print("AQI: ");Serial.print(ens160.getAQI());Serial.print("\t");
+  Serial.print("TVOC: ");Serial.print(ens160.getTVOC());Serial.print("ppb\t");
+  Serial.print("eCO2: ");Serial.print(ens160.getEtOH());Serial.print("ppm\t");
   Serial.print("R HP0: ");Serial.print(ens160.getHP0());Serial.print("Ohm\t");
   Serial.print("R HP1: ");Serial.print(ens160.getHP1());Serial.print("Ohm\t");
   Serial.print("R HP2: ");Serial.print(ens160.getHP2());Serial.print("Ohm\t");
