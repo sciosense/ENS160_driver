@@ -105,7 +105,7 @@ void loop() {
   
   Serial.print("Temperature: ");Serial.print(ens210.getTempCelsius());Serial.print("°C\t");
   Serial.print("Humidity: "); Serial.print(ens210.getHumidityPercent());Serial.print("%");
-    Serial.println();
+  Serial.println();
 
   delay(1000);
 }
