@@ -97,14 +97,15 @@ void loop() {
   
   Serial.print("AQI: ");Serial.print(ens160.getAQI());Serial.print("\t");
   Serial.print("TVOC: ");Serial.print(ens160.getTVOC());Serial.print("ppb\t");
-  Serial.print("eCO2: ");Serial.print(ens160.getEtOH());Serial.print("ppm\t");
+  Serial.print("eCO2: ");Serial.print(ens160.geteCO2());Serial.print("ppm\t");
   Serial.print("R HP0: ");Serial.print(ens160.getHP0());Serial.print("Ohm\t");
   Serial.print("R HP1: ");Serial.print(ens160.getHP1());Serial.print("Ohm\t");
   Serial.print("R HP2: ");Serial.print(ens160.getHP2());Serial.print("Ohm\t");
   Serial.print("R HP3: ");Serial.print(ens160.getHP3());Serial.print("Ohm\t");
   
   Serial.print("Temperature: ");Serial.print(ens210.getTempCelsius());Serial.print("°C\t");
-  Serial.print("Humidity: "); Serial.print(ens210.getHumidityPercent());Serial.println("%");
+  Serial.print("Humidity: "); Serial.print(ens210.getHumidityPercent());Serial.print("%");
+    Serial.println();
 
   delay(1000);
 }
