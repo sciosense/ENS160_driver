@@ -1,5 +1,6 @@
 /*
   ScioSense_ENS160.h - Library for the ENS160 sensor with I2C interface from ScioSense
+  2021 Nov 25   v5      Martin Herold		Custom mode timing fixed
   2021 Feb 04	v4	Giuseppe de Pinto	Custom mode fixed
   2020 Apr 06	v3	Christoph Friese	Changed nomenclature to ScioSense as product shifted from ams
   2020 Feb 15	v2	Giuseppe Pasetti	Corrected firmware flash option
@@ -217,14 +218,14 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 	}
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
 
-	temp = (uint8_t)((time / 24) << 6); 
+	temp = (uint8_t)(((time / 24)-1) << 6); 
 	if (measureHP0) temp = temp | 0x20;
 	if (measureHP1) temp = temp | 0x10;
 	if (measureHP2) temp = temp | 0x8;
 	if (measureHP3) temp = temp | 0x4;
 	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_0, temp);
 
-	temp = (uint8_t)((time / 24) >> 2); 
+	temp = (uint8_t)(((time / 24)-1) >> 2); 
 	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_1, temp);
 
 	this->write8(_slaveaddr, ENS160_REG_GPR_WRITE_2, (uint8_t)(tempHP0/2));
