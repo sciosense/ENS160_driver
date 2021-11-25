@@ -1,6 +1,6 @@
 /*
   ScioSense_ENS160.h - Library for the ENS160 sensor with I2C interface from ScioSense
-  2021 Nov 25   v5      Martin Herold		Custom mode timing fixed
+  2021 Nov 25   v5	Martin Herold		Custom mode timing fixed
   2021 Feb 04	v4	Giuseppe de Pinto	Custom mode fixed
   2020 Apr 06	v3	Christoph Friese	Changed nomenclature to ScioSense as product shifted from ams
   2020 Feb 15	v2	Giuseppe Pasetti	Corrected firmware flash option
