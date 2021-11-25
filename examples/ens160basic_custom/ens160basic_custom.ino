@@ -39,7 +39,7 @@ void setup() {
   delay(1000);
 
   Serial.print("ENS160...");
-  ok = ens160.begin();
+  bool ok = ens160.begin();
   Serial.println(ens160.available() ? "done." : "failed!");
   if (ens160.available()) {
     // Print ENS160 versions
