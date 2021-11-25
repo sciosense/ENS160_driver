@@ -11,7 +11,7 @@ The ENS160 also requires a IO voltage of 1.71V .. 3.6V.
 
 ## Links
 The ENS160 is made by [Sciosense](http://www.sciosense.com).
- - The datasheet of the ENS160 is not yet released but can be provided on request
+ - The datasheet of the ENS160 is availble: https://www.sciosense.com/products/environmental-sensors/digital-multi-gas-sensor/
 
 ## Prerequisites
 It is assumed that
