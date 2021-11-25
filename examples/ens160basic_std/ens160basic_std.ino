@@ -3,7 +3,7 @@
   
   This is an example for ENS160 basic reading in standard mode
     
-  Updated by Sciosense / 29-July-2021
+  Updated by Sciosense / 25-Nov-2021
  ***************************************************************************/
 
 #include <Wire.h>
@@ -57,7 +57,7 @@ void setup() {
 void loop() {
   
   if (ens160.available()) {
-    ens160.measure();
+    ens160.measure(0);
   
     Serial.print("AQI: ");Serial.print(ens160.getAQI());Serial.print("\t");
     Serial.print("TVOC: ");Serial.print(ens160.getTVOC());Serial.print("ppb\t");
