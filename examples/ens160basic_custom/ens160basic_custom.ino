@@ -52,7 +52,7 @@ void setup() {
     ens160.addCustomStep(48, 0, 0, 0, 0, 80, 80, 80, 80);         // Step 1: 48ms, no measurments, all hotplates at low temperatures 
     ens160.addCustomStep(196, 0, 0, 0, 0, 160, 215, 215, 200);    // Step 2: 196ms, no measurments, all hotplates at medium temperatures 
     ens160.addCustomStep(600, 1, 1, 1, 1, 250, 350, 350, 325);    // Step 3: 600ms, measurments done, all hotplates at high temperatures 
-    Serial.print(ens160.setMode(ENS160_OPMODE_CUSTOM) ? "done." : "failed!");
+    Serial.println(ens160.setMode(ENS160_OPMODE_CUSTOM) ? "done." : "failed!");
   }
 }
 
