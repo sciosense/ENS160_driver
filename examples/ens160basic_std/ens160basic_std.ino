@@ -19,7 +19,7 @@ ScioSense_ENS160      ens160(ENS160_I2CADDR_0);
  --------------------------------------------------------------------------*/
 void setup() {
 
-  Serial.begin(11520);
+  Serial.begin(115200);
 
   while (!Serial) {}
 
