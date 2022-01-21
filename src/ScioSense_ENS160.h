@@ -102,41 +102,41 @@ class ScioSense_ENS160 {
 		
 	public:
 	    ScioSense_ENS160(uint8_t slaveaddr = ENS160_I2CADDR_0);               				// Constructor using slave address (5A or 5B)
-		ScioSense_ENS160(uint8_t ADDR, uint8_t nCS, uint8_t nINT);       					// Constructor with pin definition
-		ScioSense_ENS160(uint8_t slaveaddr, uint8_t ADDR, uint8_t nCS, uint8_t nINT);  		// Constructor with slave address and pin definition
+		ScioSense_ENS160(uint8_t ADDR, uint8_t nCS, uint8_t nINT);       				// Constructor with pin definition
+		ScioSense_ENS160(uint8_t slaveaddr, uint8_t ADDR, uint8_t nCS, uint8_t nINT);  			// Constructor with slave address and pin definition
 
-		void 				setI2C(uint8_t sda, uint8_t scl);								// Function to redefine I2C pins
+		void 				setI2C(uint8_t sda, uint8_t scl);				// Function to redefine I2C pins
 		
-		bool 				begin(bool debug=false, bool bootloader=false);					// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
-		bool				available() 	{ return this->_available; }					// Report availability of sensor
+		bool 				begin(bool debug=false, bool bootloader=false);			// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
+		bool				available() 	{ return this->_available; }			// Report availability of sensor
 
-		bool 				setMode(uint8_t mode);											// Set operation mode of sensor
+		bool 				setMode(uint8_t mode);						// Set operation mode of sensor
 
-		bool 				initCustomMode(uint16_t stepNum);								// Initialize definition of custom mode with <n> steps
+		bool 				initCustomMode(uint16_t stepNum);				// Initialize definition of custom mode with <n> steps
 		bool 				addCustomStep(uint16_t time, bool measureHP0, bool measureHP1, bool measureHP2, bool measureHP3, uint16_t tempHP0, uint16_t tempHP1, uint16_t tempHP2, uint16_t tempHP3);
 																							// Add a step to custom measurement profile with definition of duration, enabled data acquisition and temperature for each hotplate
 																							
-		bool 				measure(bool waitForNew = true); 								// Perfrom measurement and stores result in internal variables
-		bool 				set_envdata(float t, float h);									// Writes t (degC) and h (%rh) to ENV_DATA. Returns false on I2C problems.
-		bool 				set_envdata210(uint16_t t, uint16_t h);							// Writes t and h (in ENS210 format) to ENV_DATA. Returns false on I2C problems.
-		uint8_t				getMajorRev() 	{ return this->_fw_ver_major; }					// Get major revision number of used firmware
-		uint8_t				getMinorRev() 	{ return this->_fw_ver_minor; }					// Get minor revision number of used firmware
-		uint8_t				getBuild() 		{ return this->_fw_ver_build; }					// Get build revision number of used firmware
+		bool 				measure(bool waitForNew = true); 				// Perfrom measurement and stores result in internal variables
+		bool 				set_envdata(float t, float h);					// Writes t (degC) and h (%rh) to ENV_DATA. Returns "0" if I2C transmission is successful
+		bool 				set_envdata210(uint16_t t, uint16_t h);				// Writes t and h (in ENS210 format) to ENV_DATA. Returns "0" if I2C transmission is successful
+		uint8_t				getMajorRev() 	{ return this->_fw_ver_major; }			// Get major revision number of used firmware
+		uint8_t				getMinorRev() 	{ return this->_fw_ver_minor; }			// Get minor revision number of used firmware
+		uint8_t				getBuild() 		{ return this->_fw_ver_build; }		// Get build revision number of used firmware
 
-		uint8_t				getAQI() 		{ return this->_data_aqi; }						// Get AQI value of last measurement 
-		uint16_t			getTVOC() 		{ return this->_data_tvoc; }					// Get TVOC value of last measurement 
-		uint16_t			geteCO2()		{ return this->_data_eco2; }					// Get eCO2 value of last measurement 
-		uint32_t			getHP0() 		{ return this->_hp0_rs; }						// Get resistance of HP0 of last measurement
-		uint32_t			getHP1() 		{ return this->_hp1_rs; }						// Get resistance of HP1 of last measurement
-		uint32_t			getHP2() 		{ return this->_hp2_rs; }						// Get resistance of HP2 of last measurement
-		uint32_t			getHP3() 		{ return this->_hp3_rs; }						// Get resistance of HP3 of last measurement
-		uint32_t			getHP0BL() 		{ return this->_hp0_bl; }						// Get baseline resistance of HP0 of last measurement
-		uint32_t			getHP1BL() 		{ return this->_hp1_bl; }						// Get baseline resistance of HP1 of last measurement
-		uint32_t			getHP2BL() 		{ return this->_hp2_bl; }						// Get baseline resistance of HP2 of last measurement
-		uint32_t			getHP3BL()		{ return this->_hp3_bl; }						// Get baseline resistance of HP3 of last measurement
-		uint8_t				getMISR() 		{ return this->_misr; }							// Return status code of sensor
+		uint8_t				getAQI() 		{ return this->_data_aqi; }		// Get AQI value of last measurement 
+		uint16_t			getTVOC() 		{ return this->_data_tvoc; }		// Get TVOC value of last measurement 
+		uint16_t			geteCO2()		{ return this->_data_eco2; }		// Get eCO2 value of last measurement 
+		uint32_t			getHP0() 		{ return this->_hp0_rs; }		// Get resistance of HP0 of last measurement
+		uint32_t			getHP1() 		{ return this->_hp1_rs; }		// Get resistance of HP1 of last measurement
+		uint32_t			getHP2() 		{ return this->_hp2_rs; }		// Get resistance of HP2 of last measurement
+		uint32_t			getHP3() 		{ return this->_hp3_rs; }		// Get resistance of HP3 of last measurement
+		uint32_t			getHP0BL() 		{ return this->_hp0_bl; }		// Get baseline resistance of HP0 of last measurement
+		uint32_t			getHP1BL() 		{ return this->_hp1_bl; }		// Get baseline resistance of HP1 of last measurement
+		uint32_t			getHP2BL() 		{ return this->_hp2_bl; }		// Get baseline resistance of HP2 of last measurement
+		uint32_t			getHP3BL()		{ return this->_hp3_bl; }		// Get baseline resistance of HP3 of last measurement
+		uint8_t				getMISR() 		{ return this->_misr; }			// Return status code of sensor
 		
-		bool         		flashFW(const uint8_t * app_img, int size);     				// Flash new firmware to sensor
+		bool         		flashFW(const uint8_t * app_img, int size);     			// Flash new firmware to sensor
 
 	private:
 		uint8_t				_ADDR; 
@@ -147,18 +147,18 @@ class ScioSense_ENS160 {
 				
 		bool 				debugENS160 = false;
 		
-		bool 				reset(); 		                               					// Sends a reset to the ENS160. Returns false on I2C problems.
-		bool 				checkPartID();													// Reads the part ID and confirms valid sensor
-		bool 				clearCommand();													// Initialize idle mode and confirms 
-		bool				getFirmware();													// Read firmware revisions
+		bool 				reset(); 		                               		// Sends a reset to the ENS160. Returns false on I2C problems.
+		bool 				checkPartID();							// Reads the part ID and confirms valid sensor
+		bool 				clearCommand();							// Initialize idle mode and confirms 
+		bool				getFirmware();							// Read firmware revisions
 		
-		bool				_available = false;							// ENS160 available
+		bool				_available = false;						// ENS160 available
 		
 		uint8_t				_fw_ver_major;
 		uint8_t 			_fw_ver_minor;
 		uint8_t				_fw_ver_build;
 
-		uint16_t			_stepCount;									// Counter for custom sequence
+		uint16_t			_stepCount;							// Counter for custom sequence
 
 		uint8_t				_data_aqi;
 		uint16_t			_data_tvoc;
@@ -172,7 +172,7 @@ class ScioSense_ENS160 {
 		uint32_t			_hp3_rs;
 		uint32_t			_hp3_bl;
 		uint16_t			_temp;
-		int  				_slaveaddr;										// Slave address of the ENS160
+		int  				_slaveaddr;							// Slave address of the ENS160
 		uint8_t				_misr;
 
 		
