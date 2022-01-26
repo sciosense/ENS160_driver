@@ -21,7 +21,7 @@ ScioSense_ENS160::ScioSense_ENS160(uint8_t slaveaddr) {
 
 ScioSense_ENS160::ScioSense_ENS160(uint8_t ADDR, uint8_t nCS, uint8_t nINT) {
 	this->_slaveaddr = ENS160_I2CADDR_0;
-
+	// ADDR is a PIN NUMBER as are the others
 	this->_ADDR = ADDR; 
 	this->_nINT = nINT; 
 	this->_nCS = nCS;
@@ -62,6 +62,64 @@ bool ScioSense_ENS160::begin(bool debug, bool bootloader)
 	if (debugENS160) {
 		Serial.println("begin() - I2C init done");
 	}
+	delay(ENS160_BOOTING);                   // Wait to boot after reset
+  
+	this->_available = false;
+	this->_available = this->reset(); 
+	
+	this->_available = this->checkPartID();
+
+	if (this->_available) {
+		//Either select bootloader or idle mode
+		if (bootloader) {
+			this->_available = this->setMode(ENS160_OPMODE_BOOTLOADER); 
+		} else {
+			this->_available = this->setMode(ENS160_OPMODE_IDLE);	
+		}
+		
+		this->_available = this->clearCommand();
+		this->_available = this->getFirmware();
+	}
+	if (debugENS160) {
+		if (bootloader) {
+			Serial.println("ENS160 in bootloader mode"); 
+		} else {
+			Serial.println("ENS160 in idle mode");	
+		}
+	}
+	return this->_available;
+}
+// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
+bool ScioSense_ENS160::begin(TwoWire *wire, bool debug, bool bootloader, bool userWire) 
+{
+	debugENS160 = debug;
+
+	if (!userWire) {
+		//Set pin levels
+		if (this->_ADDR > 0) {
+			pinMode(this->_ADDR, OUTPUT);
+			digitalWrite(this->_ADDR, LOW);
+		}
+		if (this->_nINT > 0) pinMode(this->_nINT, INPUT_PULLUP);
+		if (this->_nCS > 0) {
+			pinMode(this->_nCS, OUTPUT);
+			digitalWrite(this->_nCS, HIGH);
+		}
+		//init I2C
+		_i2c_init();
+		if (debugENS160) {
+			Serial.println("begin() - I2C init done");
+		}
+	} else {
+		// test the wire port supplied by the user
+		_wire = wire;
+		_wire->beginTransmission(_slaveaddr);
+		bool error=_wire->endTransmission();
+		if (error != 0) {
+			return false;
+		}
+	}
+	
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
   
 	this->_available = false;
@@ -418,6 +476,7 @@ bool ScioSense_ENS160::flashFW(const uint8_t * app_img, int size) {
 void ScioSense_ENS160::_i2c_init() {
 	if (this->_sdaPin != this->_sclPin) Wire.begin(this->_sdaPin, this->_sclPin);
 	else Wire.begin();
+	this->_wire=&Wire;
 }
 
 /**************************************************************************/
@@ -444,14 +503,14 @@ uint8_t ScioSense_ENS160::read(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t 
 	while(pos < num){
 		
 		uint8_t read_now = min((uint8_t)32, (uint8_t)(num - pos));
-		Wire.beginTransmission((uint8_t)addr);
+		_wire->beginTransmission((uint8_t)addr);
 		
-		Wire.write((uint8_t)reg + pos);
-		result = Wire.endTransmission();
-		Wire.requestFrom((uint8_t)addr, read_now);
+		_wire->write((uint8_t)reg + pos);
+		result = _wire->endTransmission();
+		_wire->requestFrom((uint8_t)addr, read_now);
 		
 		for(int i=0; i<read_now; i++){
-			buf[pos] = Wire.read();
+			buf[pos] = _wire->read();
 			pos++;
 		}
 	}
@@ -479,10 +538,10 @@ uint8_t ScioSense_ENS160::write(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t
 		Serial.println();
 	}
 	
-	Wire.beginTransmission((uint8_t)addr);
-	Wire.write((uint8_t)reg);
-	Wire.write((uint8_t *)buf, num);
-	uint8_t result = Wire.endTransmission();
+	_wire->beginTransmission((uint8_t)addr);
+	_wire->write((uint8_t)reg);
+	_wire->write((uint8_t *)buf, num);
+	uint8_t result = _wire->endTransmission();
 	return result;
 }
 

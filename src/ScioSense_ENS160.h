@@ -108,6 +108,8 @@ class ScioSense_ENS160 {
 		void 				setI2C(uint8_t sda, uint8_t scl);				// Function to redefine I2C pins
 		
 		bool 				begin(bool debug=false, bool bootloader=false);			// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
+		bool 				begin(bool debug=false, bool bootloader=false, bool userWire=false);			// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
+		bool 				begin(TwoWire *Wire, bool debug=false, bool bootloader=false, bool userWire=false);			// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
 		bool				available() 	{ return this->_available; }			// Report availability of sensor
 
 		bool 				setMode(uint8_t mode);						// Set operation mode of sensor
@@ -144,6 +146,8 @@ class ScioSense_ENS160 {
 		uint8_t				_nCS;
 		uint8_t				_sdaPin = 0;
 		uint8_t				_sclPin = 0;	
+
+		TwoWire 			*_wire = NULL; // allow the user to define their own wire port; its not the job of this library.
 				
 		bool 				debugENS160 = false;
 		
