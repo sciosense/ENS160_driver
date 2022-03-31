@@ -48,7 +48,7 @@ void setup() {
   // General setup steps
   //-------------------------------------------------------------
 
-  Serial.begin(11520);
+  Serial.begin(115200);
 
   while (!Serial) {}
 
