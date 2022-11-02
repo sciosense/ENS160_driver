@@ -48,9 +48,9 @@ void setup() {
     Serial.print("."); Serial.println(ens160.getBuild());
 
     Serial.print("\tCustom mode ");
-    ens160.initCustomMode(3);                                     // Create custom sequence with three steps
+    ens160.initCustomMode(3);                                     // example has 3 steps, max. 20 steps possible
     
-    // Step time is a multiple of 24ms and must not be smaller than 24ms
+    // Step time is a multiple of 24ms and must not be smaller than 48ms
     ens160.addCustomStep(48, 0, 0, 0, 0, 80, 80, 80, 80);         // Step 1: 48ms, no measurments, all hotplates at low temperatures 
     ens160.addCustomStep(196, 0, 0, 0, 0, 160, 215, 215, 200);    // Step 2: 196ms, no measurments, all hotplates at medium temperatures 
     ens160.addCustomStep(600, 1, 1, 1, 1, 250, 350, 350, 325);    // Step 3: 600ms, measurments done, all hotplates at high temperatures 
