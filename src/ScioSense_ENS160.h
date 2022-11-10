@@ -96,8 +96,6 @@
 #define CONVERT_RS_RAW2OHMS_I(x) 	(1 << ((x) >> 11))
 #define CONVERT_RS_RAW2OHMS_F(x) 	(pow (2, (float)(x) / 2048))
 
-//static uint8_t ENS160_BL_MAGIC[4] = {0x53, 0xCE, 0x1A, 0xBF};
-
 class ScioSense_ENS160 {
 		
 	public:
@@ -135,8 +133,6 @@ class ScioSense_ENS160 {
 		uint32_t			getHP2BL() 		{ return this->_hp2_bl; }		// Get baseline resistance of HP2 of last measurement
 		uint32_t			getHP3BL()		{ return this->_hp3_bl; }		// Get baseline resistance of HP3 of last measurement
 		uint8_t				getMISR() 		{ return this->_misr; }			// Return status code of sensor
-		
-		bool         		flashFW(const uint8_t * app_img, int size);     			// Flash new firmware to sensor
 
 	private:
 		uint8_t				_ADDR; 
