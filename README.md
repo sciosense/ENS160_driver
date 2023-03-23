@@ -82,13 +82,24 @@ Returns true in case of success and false in case of any issues.
 	
 >	bool	measure(bool waitForNew = True)
 
-Performs the sensor measurement, which means that values from the ASIC internal registers will be stored as result in internal variables. 
+Performs the sensor measurement of the prediction values, which means that values from the ASIC internal registers will be stored as result in internal variables. 
 
 If the variable *waitForNew* is set (default), the function will only terminate once new data is stored in the ASIC internal registers. Due to the measurement frequency this can take up to 1sec. 
 
 If the variable *waitForNew* is not set, the function might terminate with pervious non-updates results stored in the internal variables.
 
 Returns true in case of success and false in case of any issues.
+
+>	bool	measureRaw(bool waitForNew = True)
+
+Performs the sensor measurement of raw signals, which means that values from the ASIC internal registers will be stored as result in internal variables. 
+
+If the variable *waitForNew* is set (default), the function will only terminate once new data is stored in the ASIC internal registers. Due to the measurement frequency this can take up to 1sec. 
+
+If the variable *waitForNew* is not set, the function might terminate with pervious non-updates results stored in the internal variables.
+
+Returns true in case of success and false in case of any issues.
+
 
 >	bool	set_envdata210(uint16_t t, uint16_t h)
 
