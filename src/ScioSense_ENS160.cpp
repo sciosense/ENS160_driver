@@ -1,5 +1,6 @@
 /*
   ScioSense_ENS160.h - Library for the ENS160 sensor with I2C interface from ScioSense
+  2023 Mar 23	v6	Christoph Friese	Bugfix measurement routine, prepare next release
   2021 Nov 25   v5	Martin Herold		Custom mode timing fixed
   2021 Feb 04	v4	Giuseppe de Pinto	Custom mode fixed
   2020 Apr 06	v3	Christoph Friese	Changed nomenclature to ScioSense as product shifted from ams
@@ -159,6 +160,9 @@ bool ScioSense_ENS160::getFirmware() {
 	this->_fw_ver_major = i2cbuf[0];
 	this->_fw_ver_minor = i2cbuf[1];
 	this->_fw_ver_build = i2cbuf[2];
+	
+	if (this->_fw_ver_major > 6) this->_revENS16x = 1;
+	else this->_revENS16x = 0;
 
 	if (debugENS160) {
 		Serial.println(this->_fw_ver_major);
@@ -176,7 +180,9 @@ bool ScioSense_ENS160::getFirmware() {
 bool ScioSense_ENS160::setMode(uint8_t mode) {
 	uint8_t result;
 	
-	result = this->write8(_slaveaddr, ENS160_REG_OPMODE, mode);
+	//LP only valid for rev>0
+	if ((mode == ENS160_OPMODE_LP) and (_revENS16x == 0)) result = 1;
+	else result = this->write8(_slaveaddr, ENS160_REG_OPMODE, mode);
 
 	if (debugENS160) {
 		Serial.print("setMode() activate result: ");
@@ -254,7 +260,7 @@ bool ScioSense_ENS160::addCustomStep(uint16_t time, bool measureHP0, bool measur
 	
 }
 
-// Perfrom measurement and stores result in internal variables
+// Perform prediction measurement and stores result in internal variables
 bool ScioSense_ENS160::measure(bool waitForNew) {
 	uint8_t i2cbuf[8];
 	uint8_t status;
@@ -273,7 +279,7 @@ bool ScioSense_ENS160::measure(bool waitForNew) {
 				Serial.println(status);
 			}
 			
-		} while (!IS_NEW_DATA_AVAILABLE(status));
+		} while (!IS_NEWDAT(status));
 	} else {
 		status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);	
 	}
@@ -282,24 +288,49 @@ bool ScioSense_ENS160::measure(bool waitForNew) {
 	if (IS_NEWDAT(status)) {
 		newData = true;
 		this->read(_slaveaddr, ENS160_REG_DATA_AQI, i2cbuf, 7);
+		_data_aqi = i2cbuf[0];
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
-		_data_aqi = i2cbuf[0];
+		if (_revENS16x > 0) _data_aqi500 = ((uint16_t)i2cbuf[5]) | ((uint16_t)i2cbuf[6] << 8);
 	}
 	
-	// Read raw resistance values
+	return newData;
+}
+
+// Perfrom raw measurement and stores result in internal variables
+bool ScioSense_ENS160::measureRaw(bool waitForNew) {
+	uint8_t i2cbuf[8];
+	uint8_t status;
+	bool newData = false;
+
+	// Set default status for early bail out
+	if (debugENS160) Serial.println("Start measurement");
+	
+	if (waitForNew) {
+		do {
+			delay(1);
+			status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);
+			
+			if (debugENS160) {
+				Serial.print("Status: ");
+				Serial.println(status);
+			}
+		} while (!IS_NEWGPR(status));
+	} else {
+		status = this->read8(_slaveaddr, ENS160_REG_DATA_STATUS);	
+	}
+	
 	if (IS_NEWGPR(status)) {
 		newData = true;		
+		
+		// Read raw resistance values
 		this->read(_slaveaddr, ENS160_REG_GPR_READ_0, i2cbuf, 8);
 		_hp0_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
 		_hp1_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
 		_hp2_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[4] | ((uint16_t)i2cbuf[5] << 8)));
 		_hp3_rs = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[6] | ((uint16_t)i2cbuf[7] << 8)));
-	}
-
-	// Read baselines
-	if ((IS_NEWGPR(status)) or (IS_NEWDAT(status))) {
-		newData = true;
+	
+		// Read baselines
 		this->read(_slaveaddr, ENS160_REG_DATA_BL, i2cbuf, 8);
 		_hp0_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8)));
 		_hp1_bl = CONVERT_RS_RAW2OHMS_F((uint32_t)(i2cbuf[2] | ((uint16_t)i2cbuf[3] << 8)));
@@ -312,6 +343,7 @@ bool ScioSense_ENS160::measure(bool waitForNew) {
 	
 	return newData;
 }
+
 
 // Writes t (degC) and h (%rh) to ENV_DATA. Returns false on I2C problems.
 bool ScioSense_ENS160::set_envdata(float t, float h) {
