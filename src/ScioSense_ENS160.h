@@ -27,19 +27,19 @@
 #define ENS160_I2CADDR_1          	0x53		//ADDR high
 
 // ENS160 registers for version V0
-#define ENS160_REG_PART_ID          0x00 		// 2 byte register
-#define ENS160_REG_OPMODE			0x10
-#define ENS160_REG_CONFIG			0x11
-#define ENS160_REG_COMMAND			0x12
-#define ENS160_REG_TEMP_IN			0x13
-#define ENS160_REG_RH_IN			0x15
+#define ENS160_REG_PART_ID          	0x00 		// 2 byte register
+#define ENS160_REG_OPMODE		0x10
+#define ENS160_REG_CONFIG		0x11
+#define ENS160_REG_COMMAND		0x12
+#define ENS160_REG_TEMP_IN		0x13
+#define ENS160_REG_RH_IN		0x15
 #define ENS160_REG_DATA_STATUS		0x20
-#define ENS160_REG_DATA_AQI			0x21
+#define ENS160_REG_DATA_AQI		0x21
 #define ENS160_REG_DATA_TVOC		0x22
 #define ENS160_REG_DATA_ECO2		0x24			
-#define ENS160_REG_DATA_BL			0x28
-#define ENS160_REG_DATA_T			0x30
-#define ENS160_REG_DATA_RH			0x32
+#define ENS160_REG_DATA_BL		0x28
+#define ENS160_REG_DATA_T		0x30
+#define ENS160_REG_DATA_RH		0x32
 #define ENS160_REG_DATA_MISR		0x38
 #define ENS160_REG_GPR_WRITE_0		0x40
 #define ENS160_REG_GPR_WRITE_1		ENS160_REG_GPR_WRITE_0 + 1
@@ -55,26 +55,23 @@
 #define ENS160_REG_GPR_READ_7		ENS160_REG_GPR_READ_0 + 7
 
 //ENS160 data register fields
-#define ENS160_COMMAND_NOP			0x00
+#define ENS160_COMMAND_NOP		0x00
 #define ENS160_COMMAND_CLRGPR		0xCC
 #define ENS160_COMMAND_GET_APPVER	0x0E 
 #define ENS160_COMMAND_SETTH		0x02
 #define ENS160_COMMAND_SETSEQ		0xC2
 
-#define ENS160_OPMODE_RESET			0xF0
+#define ENS160_OPMODE_RESET		0xF0
 #define ENS160_OPMODE_DEP_SLEEP		0x00
-#define ENS160_OPMODE_IDLE			0x01
-#define ENS160_OPMODE_STD			0x02
-#define ENS160_OPMODE_INTERMEDIATE	0x03	
+#define ENS160_OPMODE_IDLE		0x01
+#define ENS160_OPMODE_STD		0x02
+#define ENS160_OPMODE_LP		0x03	
 #define ENS160_OPMODE_CUSTOM		0xC0
-#define ENS160_OPMODE_D0			0xD0
-#define ENS160_OPMODE_D1			0xD1
-#define ENS160_OPMODE_BOOTLOADER	0xB0
 
-#define ENS160_BL_CMD_START			0x02
+#define ENS160_BL_CMD_START		0x02
 #define ENS160_BL_CMD_ERASE_APP		0x04
 #define ENS160_BL_CMD_ERASE_BLINE	0x06
-#define ENS160_BL_CMD_WRITE			0x08
+#define ENS160_BL_CMD_WRITE		0x08
 #define ENS160_BL_CMD_VERIFY		0x0A
 #define ENS160_BL_CMD_GET_BLVER		0x0C
 #define ENS160_BL_CMD_GET_APPVER	0x0E
@@ -107,14 +104,15 @@ class ScioSense_ENS160 {
 		
 		bool 				begin(bool debug=false, bool bootloader=false);			// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
 		bool				available() 	{ return this->_available; }			// Report availability of sensor
-
+		uint8_t				revENS16x() 	{ return this->_revENS16x; }			// Report version of sensor (0: ENS160, 1: ENS161)
 		bool 				setMode(uint8_t mode);						// Set operation mode of sensor
 
 		bool 				initCustomMode(uint16_t stepNum);				// Initialize definition of custom mode with <n> steps
 		bool 				addCustomStep(uint16_t time, bool measureHP0, bool measureHP1, bool measureHP2, bool measureHP3, uint16_t tempHP0, uint16_t tempHP1, uint16_t tempHP2, uint16_t tempHP3);
 																							// Add a step to custom measurement profile with definition of duration, enabled data acquisition and temperature for each hotplate
 																							
-		bool 				measure(bool waitForNew = true); 				// Perfrom measurement and stores result in internal variables
+		bool 				measure(bool waitForNew = true); 				// Perform measurement and stores result in internal variables
+		bool 				measureRaw(bool waitForNew = true); 				// Perform raw measurement and stores result in internal variables
 		bool 				set_envdata(float t, float h);					// Writes t (degC) and h (%rh) to ENV_DATA. Returns "0" if I2C transmission is successful
 		bool 				set_envdata210(uint16_t t, uint16_t h);				// Writes t and h (in ENS210 format) to ENV_DATA. Returns "0" if I2C transmission is successful
 		uint8_t				getMajorRev() 	{ return this->_fw_ver_major; }			// Get major revision number of used firmware
@@ -149,7 +147,8 @@ class ScioSense_ENS160 {
 		bool				getFirmware();							// Read firmware revisions
 		
 		bool				_available = false;						// ENS160 available
-		
+		uint8_t				_revENS16x = 0;							// ENS160 or ENS161 connected? (FW >7)
+	
 		uint8_t				_fw_ver_major;
 		uint8_t 			_fw_ver_minor;
 		uint8_t				_fw_ver_build;
@@ -170,7 +169,6 @@ class ScioSense_ENS160 {
 		uint16_t			_temp;
 		int  				_slaveaddr;							// Slave address of the ENS160
 		uint8_t				_misr;
-
 		
 		//Isotherm, HP0 252°C / HP1 350°C / HP2 250°C / HP3 324°C / measure every 1008ms
 		uint8_t _seq_steps[1][8] = {
