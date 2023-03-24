@@ -36,7 +36,7 @@ To build an example sketch
  - Select Sketch > Verify/Compile.
 
 ## Functions
-> bool begin(bool debug=false, bool bootloader=false)
+> bool begin(bool debug=false)
 
 Required to initialize the sensor during startup. The function takes up to two arguments: 
 
