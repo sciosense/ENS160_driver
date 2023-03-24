@@ -103,7 +103,7 @@ class ScioSense_ENS160 {
 
 		void 				setI2C(uint8_t sda, uint8_t scl);				// Function to redefine I2C pins
 		
-		bool 				begin(bool debug=false, bool bootloader=false);			// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
+		bool 				begin(bool debug=false);					// Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
 		bool				available() 	{ return this->_available; }			// Report availability of sensor
 		uint8_t				revENS16x() 	{ return this->_revENS16x; }			// Report version of sensor (0: ENS160, 1: ENS161)
 		bool 				setMode(uint8_t mode);						// Set operation mode of sensor
