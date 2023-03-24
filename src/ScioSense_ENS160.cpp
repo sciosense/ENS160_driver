@@ -43,7 +43,7 @@ void ScioSense_ENS160::setI2C(uint8_t sda, uint8_t scl) {
 }	
 
 // Init I2C communication, resets ENS160 and checks its PART_ID. Returns false on I2C problems or wrong PART_ID.
-bool ScioSense_ENS160::begin(bool debug, bool bootloader) 
+bool ScioSense_ENS160::begin(bool debug) 
 {
 	debugENS160 = debug;
 
@@ -71,22 +71,12 @@ bool ScioSense_ENS160::begin(bool debug, bool bootloader)
 	this->_available = this->checkPartID();
 
 	if (this->_available) {
-		//Either select bootloader or idle mode
-		if (bootloader) {
-			this->_available = this->setMode(ENS160_OPMODE_BOOTLOADER); 
-		} else {
-			this->_available = this->setMode(ENS160_OPMODE_IDLE);	
-		}
-		
+		this->_available = this->setMode(ENS160_OPMODE_IDLE);	
 		this->_available = this->clearCommand();
 		this->_available = this->getFirmware();
 	}
 	if (debugENS160) {
-		if (bootloader) {
-			Serial.println("ENS160 in bootloader mode"); 
-		} else {
-			Serial.println("ENS160 in idle mode");	
-		}
+		Serial.println("ENS160 in idle mode");	
 	}
 	return this->_available;
 }
