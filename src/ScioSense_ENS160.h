@@ -21,6 +21,7 @@
 
 // Chip constants
 #define ENS160_PARTID				0x0160
+#define ENS161_PARTID				0x0161
 #define ENS160_BOOTING				10
 
 // 7-bit I2C slave address of the ENS160
