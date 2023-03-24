@@ -99,17 +99,23 @@ bool ScioSense_ENS160::reset(void)
 bool ScioSense_ENS160::checkPartID(void) {
 	uint8_t i2cbuf[2];
 	uint16_t part_id;
+	bool result = false;
 	
 	this->read(_slaveaddr, ENS160_REG_PART_ID, i2cbuf, 2);
 	part_id = i2cbuf[0] | ((uint16_t)i2cbuf[1] << 8);
 	
 	if (debugENS160) {
 		Serial.print("checkPartID() result: ");
-		Serial.println(part_id == ENS160_PARTID ? "ok" : "nok");
+		if (part_id == ENS160_PARTID) Serial.println("ENS160 ok");
+		else if (part_id == ENS161_PARTID) Serial.println("ENS161 ok");
+		else Serial.println("nok");
 	}	
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
+
+	if (part_id == ENS160_PARTID) { this->_revENS16x = 0; result = true; }
+	else if (part_id == ENS161_PARTID) { this->_revENS16x = 0; result = true; }
 	
-	return part_id == ENS160_PARTID;
+	return result;
 }
 
 // Initialize idle mode and confirms 
