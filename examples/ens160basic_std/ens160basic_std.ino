@@ -57,7 +57,8 @@ void setup() {
 void loop() {
   
   if (ens160.available()) {
-    ens160.measure(0);
+    ens160.measure(true);
+    ens160.measureRaw(true);
   
     Serial.print("AQI: ");Serial.print(ens160.getAQI());Serial.print("\t");
     Serial.print("TVOC: ");Serial.print(ens160.getTVOC());Serial.print("ppb\t");
