@@ -288,6 +288,7 @@ bool ScioSense_ENS160::measure(bool waitForNew) {
 		_data_tvoc = i2cbuf[1] | ((uint16_t)i2cbuf[2] << 8);
 		_data_eco2 = i2cbuf[3] | ((uint16_t)i2cbuf[4] << 8);
 		if (_revENS16x > 0) _data_aqi500 = ((uint16_t)i2cbuf[5]) | ((uint16_t)i2cbuf[6] << 8);
+		else _data_aqi500 = 0;
 	}
 	
 	return newData;
