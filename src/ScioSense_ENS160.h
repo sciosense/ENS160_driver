@@ -124,6 +124,7 @@ class ScioSense_ENS160 {
 		uint8_t				getAQI() 		{ return this->_data_aqi; }		// Get AQI value of last measurement 
 		uint16_t			getTVOC() 		{ return this->_data_tvoc; }		// Get TVOC value of last measurement 
 		uint16_t			geteCO2()		{ return this->_data_eco2; }		// Get eCO2 value of last measurement 
+		uint16_t			getAQI500() 		{ return this->_data_aqi500; }		// Get AQI500 value of last measurement 
 		uint32_t			getHP0() 		{ return this->_hp0_rs; }		// Get resistance of HP0 of last measurement
 		uint32_t			getHP1() 		{ return this->_hp1_rs; }		// Get resistance of HP1 of last measurement
 		uint32_t			getHP2() 		{ return this->_hp2_rs; }		// Get resistance of HP2 of last measurement
@@ -160,6 +161,7 @@ class ScioSense_ENS160 {
 		uint8_t				_data_aqi;
 		uint16_t			_data_tvoc;
 		uint16_t			_data_eco2;
+		uint16_t			_data_aqi500;
 		uint32_t			_hp0_rs;
 		uint32_t			_hp0_bl;
 		uint32_t			_hp1_rs;
