@@ -113,7 +113,7 @@ bool ScioSense_ENS160::checkPartID(void) {
 	delay(ENS160_BOOTING);                   // Wait to boot after reset
 
 	if (part_id == ENS160_PARTID) { this->_revENS16x = 0; result = true; }
-	else if (part_id == ENS161_PARTID) { this->_revENS16x = 0; result = true; }
+	else if (part_id == ENS161_PARTID) { this->_revENS16x = 1; result = true; }
 	
 	return result;
 }
