@@ -66,7 +66,7 @@ void setup() {
 void loop() {
   
   if (ens160.available()) {
-    ens160.measure();
+    ens160.measureRaw(true);
   
     Serial.print("R HP0: ");Serial.print(ens160.getHP0());Serial.print("Ohm\t");
     Serial.print("R HP1: ");Serial.print(ens160.getHP1());Serial.print("Ohm\t");
