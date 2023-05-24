@@ -92,7 +92,8 @@ void loop() {
       ens210.measure();
       ens160.set_envdata210(ens210.getDataT(),ens210.getDataH());
     }
-    ens160.measure();
+    ens160.measure(true);
+    ens160.measureRaw(true);
   }
   
   Serial.print("AQI: ");Serial.print(ens160.getAQI());Serial.print("\t");
